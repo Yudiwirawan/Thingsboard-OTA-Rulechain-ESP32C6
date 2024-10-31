@@ -7,4 +7,4 @@ press reset on esp32c6 every new firmware update
 
 by: 
 Instgaram: @yudiwrwn
-linkedin: https://www.linkedin.com/in/yudi-wirawan-019258247/
+linkedIn: https://www.linkedin.com/in/yudi-wirawan-019258247/
