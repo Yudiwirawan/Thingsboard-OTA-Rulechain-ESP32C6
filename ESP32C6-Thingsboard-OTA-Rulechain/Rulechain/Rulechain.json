@@ -1,0 +1,198 @@
+{
+  "ruleChain": {
+    "name": "fermentor",
+    "type": "CORE",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null,
+    "additionalInfo": {
+      "description": ""
+    }
+  },
+  "metadata": {
+    "version": 7,
+    "firstNodeIndex": 0,
+    "nodes": [
+      {
+        "type": "org.thingsboard.rule.engine.filter.TbMsgTypeSwitchNode",
+        "name": "Message Type Switch",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "version": 0
+        },
+        "additionalInfo": {
+          "description": "Memfilter pesan telemetri",
+          "layoutX": 181,
+          "layoutY": 271
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "Send Heater Command",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "timeoutInSeconds": 1
+        },
+        "additionalInfo": {
+          "description": "Mengirim perintah ke perangkat",
+          "layoutX": 757,
+          "layoutY": 171
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save Timeseries",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "defaultTTL": 0
+        },
+        "additionalInfo": {
+          "description": "Menyimpan data telemetri",
+          "layoutX": 611,
+          "layoutY": 268
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "control",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var temperature = msg.temperature;\nvar heaterState;\n\nif (temperature < 40.0) {\n    heaterState = true;  // Nyalakan heater jika suhu di bawah 40°C\n} else {\n    heaterState = false; // Matikan heater jika suhu sudah mencapai/melebihi 40°C\n}\n\nmsg.method = 'setHeater';\nmsg.params = {\n    state: heaterState\n};\n\nreturn {msg: msg, metadata: metadata, msgType: msgType};",
+          "tbelScript": "return {msg: msg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 423,
+          "layoutY": 177
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "control",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "scriptLang": "JS",
+          "jsScript": "var ph = msg.ph;\nvar valveState;\n\nif (ph >= 6.0 && ph <= 9.0) {\n    valveState = true;  // Nyalakan valve jika pH antara 6-9\n} else {\n    valveState = false; // Matikan valve jika pH < 6 atau > 9\n}\n\nmsg.method = 'setValve';\nmsg.params = {\n    state: valveState\n};\n\nreturn {msg: msg, metadata: metadata, msgType: msgType};\n",
+          "tbelScript": "return {msg: msg, metadata: metadata, msgType: msgType};"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 344,
+          "layoutY": 53
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "Send Valve Command",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 0,
+        "configuration": {
+          "timeoutInSeconds": 1
+        },
+        "additionalInfo": {
+          "description": "Mengirim perintah ke perangkat",
+          "layoutX": 741,
+          "layoutY": 64
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save Attributes",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 2,
+        "configuration": {
+          "scope": "SERVER_SCOPE",
+          "notifyDevice": false,
+          "sendAttributesUpdatedNotification": false,
+          "updateAttributesOnlyOnValueChange": true
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 585,
+          "layoutY": 383
+        }
+      },
+      {
+        "type": "org.thingsboard.rule.engine.flow.TbRuleChainInputNode",
+        "name": "OTA",
+        "debugMode": false,
+        "singletonMode": false,
+        "queueName": null,
+        "configurationVersion": 1,
+        "configuration": {
+          "forwardMsgToDefaultRuleChain": false,
+          "ruleChainId": "a7ef2b80-94dc-11ef-9285-db91bf15ba2b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 420,
+          "layoutY": 522
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 2,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 3,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 4,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 6,
+        "type": "Post attributes"
+      },
+      {
+        "fromIndex": 0,
+        "toIndex": 7,
+        "type": "Attributes Updated"
+      },
+      {
+        "fromIndex": 3,
+        "toIndex": 1,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
