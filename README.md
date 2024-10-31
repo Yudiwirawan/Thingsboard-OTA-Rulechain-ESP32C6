@@ -3,3 +3,8 @@ IoT Project With ESP32C6, Control Heater and Valve using Rulechain, OTA firmware
 
 
 press reset on esp32c6 every new firmware update
+
+
+by: 
+Instgaram: @yudiwrwn
+linkedin: https://www.linkedin.com/in/yudi-wirawan-019258247/
